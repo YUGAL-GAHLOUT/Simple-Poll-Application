@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Simple Poll Application</title>
+   <style>
+    body {
+        font-family: Arial, sans-serif;
+        margin: 0;
+        padding: 0;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        background-color: #f0f8ff;
+    }
+
+    .container {
+        width: 100%;
+        max-width: 600px;
+        background-color: white;
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    }
+
+    h1 {
+        text-align: center;
+        color: #3b5998;
+        margin-bottom: 30px;
+    }
+
+    h2 {
+        text-align: center;
+        color: #333;
+        margin-bottom: 20px;
+    }
+
+    form {
+        margin-bottom: 20px;
+    }
+
+    label {
+        font-weight: bold;
+        color: #333;
+        margin-bottom: 5px;
+    }
+
+    input[type="text"] {
+        display: block;
+        width: 100%;
+        padding: 10px;
+        margin-bottom: 15px;
+        border-radius: 4px;
+        border: 1px solid #ccc;
+        font-size: 16px;
+    }
+
+    input[type="radio"] {
+        margin-right: 10px;
+    }
+
+    button {
+        background-color: #3b5998;
+        color: white;
+        border: none;
+        padding: 10px 15px;
+        cursor: pointer;
+        border-radius: 4px;
+        font-size: 16px;
+        transition: background-color 0.3s;
+    }
+
+    button:hover {
+        background-color: #2e4676;
+    }
+
+    .hidden {
+        display: none;
+    }
+
+    #pollOptions label {
+        display: block;
+        padding: 8px;
+        margin: 10px 0;
+        border: 2px solid #ddd;
+        border-radius: 4px;
+        background-color: #f7f7f7;
+        transition: background-color 0.3s, border-color 0.3s;
+    }
+
+    #pollOptions label:hover {
+        background-color: #e8f0fe;
+        border-color: #3b5998;
+    }
+
+    #resultsList {
+        list-style-type: none;
+        padding: 0;
+        margin: 0;
+    }
+
+    #resultsList li {
+        background-color: #f1f1f1;
+        padding: 10px;
+        margin: 5px 0;
+        border-radius: 4px;
+        font-size: 18px;
+    }
+   </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Create a Poll (Admin Only)</h1>
+        <form id="pollForm">
+            <label for="pollQuestion">Poll Question:</label>
+            <input type="text" id="pollQuestion" placeholder="Enter the poll question" required>
+
+            <label for="option1">Option 1:</label>
+            <input type="text" id="option1" placeholder="Enter first option" required>
+
+            <label for="option2">Option 2:</label>
+            <input type="text" id="option2" placeholder="Enter second option" required>
+
+            <button type="submit">Create Poll</button>
+        </form>
+
+        <div id="pollSection" class="hidden">
+            <h2 id="pollTitle"></h2>
+            <form id="voteForm">
+                <div id="pollOptions"></div>
+                <button type="submit">Submit Vote</button>
+            </form>
+        </div>
+
+        <div id="resultsSection" class="hidden">
+            <h2>Poll Results</h2>
+            <ul id="resultsList"></ul>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById("pollForm").addEventListener("submit", function (event) {
+            event.preventDefault();
+
+            // Get poll question and options
+            const pollQuestion = document.getElementById("pollQuestion").value;
+            const option1 = document.getElementById("option1").value;
+            const option2 = document.getElementById("option2").value;
+
+            // Validate inputs
+            if (!pollQuestion || !option1 || !option2) {
+                alert("Please fill out all fields.");
+                return;
+            }
+
+            // Show poll section and hide admin form
+            document.getElementById("pollSection").classList.remove("hidden");
+            document.getElementById("pollTitle").textContent = pollQuestion;
+            document.getElementById("pollForm").classList.add("hidden");
+
+            // Add poll options to voting form
+            const pollOptionsDiv = document.getElementById("pollOptions");
+            pollOptionsDiv.innerHTML = `
+                <label>
+                    <input type="radio" name="pollOption" value="option1" required>
+                    ${option1}
+                </label>
+                <label>
+                    <input type="radio" name="pollOption" value="option2" required>
+                    ${option2}
+                </label>
+            `;
+        });
+
+        document.getElementById("voteForm").addEventListener("submit", function (event) {
+            event.preventDefault();
+
+            // Get the selected option
+            const selectedOption = document.querySelector('input[name="pollOption"]:checked').value;
+
+            // Generate random vote counts (mock data)
+            const randomVotes1 = Math.floor(Math.random() * 100) + 1; // Random votes between 1 and 100
+            const randomVotes2 = Math.floor(Math.random() * 100) + 1;
+
+            // Hide the voting form and show the results
+            document.getElementById("pollSection").classList.add("hidden");
+            document.getElementById("resultsSection").classList.remove("hidden");
+
+            // Display the mock vote results
+            const option1Text = document.getElementById("option1").value;
+            const option2Text = document.getElementById("option2").value;
+            const resultsList = document.getElementById("resultsList");
+            resultsList.innerHTML = `
+                <li>${option1Text}: ${randomVotes1} votes</li>
+                <li>${option2Text}: ${randomVotes2} votes</li>
+            `;
+        });
+    </script>
+</body>
+</html>
